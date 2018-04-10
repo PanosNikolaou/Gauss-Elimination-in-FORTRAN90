@@ -83,36 +83,13 @@ module tools
     allocate(bcopy(ubound(b,1)))
     bcopy(1:ubound(b,1)) = b
 
-    print*,"Original matrix"
-    print*,"-------------------------------------------------"
-
-    call printmatrix(acopy,(ubound(a,1)),(ubound(a,1)))
-    print*,"-------------------------------------------------"
-
     n = ubound(a,1)
 
-    !forward elimination
-
-!    do k=1, n-1
-!        do i=k+1,n
-!            c=acopy(i,k)/acopy(k,k)
-!            acopy(i,k) = 0.0
-!            bcopy(i)=bcopy(i)- c*bcopy(k)
-!                do j=k+1,n
-!                    acopy(i,j) = acopy(i,j)-c*acopy(k,j)
-!                end do
-!        end do
-!    end do
         do j=1, n-1
             pos = maxloc(abs(acopy(j:n,j)),1) + j-1
             rowtemp = acopy(pos,:)
             acopy(pos,:) = acopy(j,:)
             acopy(j,:) = rowtemp
-
-!            do i=j=1, n
-!                acopy(i,1) = acopy(i,1) * acopy(j,1) / acopy(j,j) * acopy(i,j)
-!            end do
-
         end do
 
         do j=2, ubound(a,1)
@@ -120,8 +97,6 @@ module tools
             acopy(i, :) = acopy(i,:) - acopy(j-1,:)/acopy(j-1,j-1)*acopy(i,j-1)
           end do
         end do
-
-    !back substitution
 
     x(n) = bcopy(n)/acopy(n,n)
     do i=n-1,1,-1
@@ -131,14 +106,6 @@ module tools
         end do
         x(i) = (bcopy(i)- c)/acopy(i,i)
     end do
-
-    print*,"Transformed matrix"
-    print*,"-------------------------------------------------"
-
-    call printmatrix(acopy,(ubound(a,1)),(ubound(a,1)))
-    print*,"-------------------------------------------------"
-
-
   end subroutine gauss
 
   subroutine printmatrix(a,n_rows,n_cols)
